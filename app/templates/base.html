@@ -55,6 +55,7 @@
           <div class="avatar">{{ current_user.username[0].upper() }}</div>
           <span>{{ current_user.username }}</span>
         </div>
+        <a class="btn btn-outline btn-sm" href="{{ url_for('auth.change_password') }}">🔒</a>
         <a class="btn btn-outline btn-sm" href="{{ url_for('auth.logout') }}"
           >Çıkış</a
         >
