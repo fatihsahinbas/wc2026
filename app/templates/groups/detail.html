@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header flex-between">
+    <div>
+      <div class="page-title">{{ group.name }}</div>
+      <div class="page-subtitle">
+        {{ group.member_count() }} üye
+        {% if group.description %} · {{ group.description }}{% endif %}
+      </div>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('groups.leaderboard', group_id=group.id) }}">
+      🏅 Liderlik Tablosu
+    </a>
+  </div>
+
+  <div class="card mb-3">
+    <div class="flex-between mb-2">
+      <div class="card-title" style="margin-bottom:0">Davet Kodu</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap">
+      <span class="invite-code" style="font-size:1.3rem; padding:.4rem 1rem">{{ group.invite_code }}</span>
+      <span class="text-sm text-muted">Arkadaşlarını davet etmek için bu kodu paylaş. Tıkla → Kopyala!</span>
+    </div>
+  </div>
+
+  <div class="card-title">Üyeler</div>
+  <div class="card" style="padding:0; overflow:hidden">
+    <table class="leaderboard-table">
+      <thead>
+        <tr><th>#</th><th>Kullanıcı</th><th>Toplam Puan</th></tr>
+      </thead>
+      <tbody>
+        {% for entry in leaderboard %}
+        <tr>
+          <td><span class="rank-num">{{ loop.index }}</span></td>
+          <td>
+            {{ entry.user.username }}
+            {% if entry.user.id == group.owner_id %}
+              <span class="pred-badge pending" style="font-size:.62rem">Admin</span>
+            {% endif %}
+            {% if entry.user.id == current_user.id %}
+              <span class="pred-badge correct" style="font-size:.62rem">Sen</span>
+            {% endif %}
+          </td>
+          <td><span class="points-pill">{{ entry.points }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

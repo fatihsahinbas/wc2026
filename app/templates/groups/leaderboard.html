@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header flex-between">
+    <div>
+      <div class="page-title">🏅 {{ group.name }}</div>
+      <div class="page-subtitle">Grup Liderlik Tablosu · {{ group.member_count() }} üye</div>
+    </div>
+    <a class="btn btn-outline" href="{{ url_for('groups.detail', group_id=group.id) }}">← Gruba Dön</a>
+  </div>
+
+  {# Top 3 podium #}
+  {% if leaderboard|length >= 3 %}
+  <div class="grid-3 mb-3">
+    {# 2nd #}
+    <div class="stat-card" style="border-color:rgba(192,192,192,.3); margin-top:2rem">
+      <div style="font-size:2rem">🥈</div>
+      <div style="font-family:var(--font-display); font-size:1.1rem; margin-top:.25rem">
+        {{ leaderboard[1].user.username }}
+      </div>
+      <div class="stat-value" style="font-size:2rem; color:#c0c0c0">{{ leaderboard[1].points }}</div>
+      <div class="stat-label">puan</div>
+    </div>
+    {# 1st #}
+    <div class="stat-card" style="border-color:rgba(255,215,0,.4); background:rgba(255,215,0,.05)">
+      <div style="font-size:2.5rem">🥇</div>
+      <div style="font-family:var(--font-display); font-size:1.3rem; margin-top:.25rem">
+        {{ leaderboard[0].user.username }}
+      </div>
+      <div class="stat-value">{{ leaderboard[0].points }}</div>
+      <div class="stat-label">puan</div>
+    </div>
+    {# 3rd #}
+    <div class="stat-card" style="border-color:rgba(205,127,50,.3); margin-top:2rem">
+      <div style="font-size:2rem">🥉</div>
+      <div style="font-family:var(--font-display); font-size:1.1rem; margin-top:.25rem">
+        {{ leaderboard[2].user.username }}
+      </div>
+      <div class="stat-value" style="font-size:2rem; color:#cd7f32">{{ leaderboard[2].points }}</div>
+      <div class="stat-label">puan</div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# Full Table #}
+  <div class="card" style="padding:0; overflow:hidden">
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Kullanıcı</th>
+          <th>Puan</th>
+          <th>Doğru Tahmin</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in leaderboard %}
+        <tr class="rank-{{ loop.index if loop.index <= 3 else '' }}">
+          <td><span class="rank-num">{{ loop.index }}</span></td>
+          <td>
+            <div style="display:flex; align-items:center; gap:.6rem">
+              <div style="width:30px;height:30px;background:var(--accent-glow);border-radius:50%;
+                           display:flex;align-items:center;justify-content:center;
+                           font-family:var(--font-display);color:var(--accent);font-size:.9rem">
+                {{ entry.user.username[0].upper() }}
+              </div>
+              <span>{{ entry.user.username }}</span>
+              {% if entry.user.id == current_user.id %}
+                <span class="pred-badge pending" style="font-size:.65rem">Sen</span>
+              {% endif %}
+            </div>
+          </td>
+          <td><span class="points-pill">{{ entry.points }}</span></td>
+          <td class="text-secondary">
+            {{ entry.user.predictions.filter_by(points=3).count() }} /
+            {{ entry.user.predictions.count() }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-sm text-muted mt-2" style="text-align:center">
+    Puanlama: Doğru sonuç (galibiyet/beraberlik) = <span class="text-accent">3 puan</span>
+  </p>
+</div>
+{% endblock %}

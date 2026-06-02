@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <div class="page-title">👤 Kullanıcılar</div>
+    <div class="page-subtitle">{{ users|length }} kayıtlı kullanıcı</div>
+  </div>
+
+  <div class="card" style="padding:0; overflow:hidden">
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Kullanıcı</th>
+          <th>E-posta</th>
+          <th>Tahmin</th>
+          <th>Toplam Puan</th>
+          <th>Kayıt</th>
+          <th>Rol</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td class="text-muted">{{ loop.index }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <div style="width:28px;height:28px;background:var(--accent-glow);border-radius:50%;
+                          display:flex;align-items:center;justify-content:center;
+                          font-family:var(--font-display);color:var(--accent);font-size:.85rem">
+                {{ user.username[0].upper() }}
+              </div>
+              {{ user.username }}
+            </div>
+          </td>
+          <td class="text-secondary text-sm">{{ user.email }}</td>
+          <td class="text-secondary">{{ user.predictions.count() }}</td>
+          <td><span class="points-pill">
+            {{ user.predictions.filter_by(points=3).count() * 3 }}
+          </span></td>
+          <td class="text-muted text-sm">{{ user.created_at.strftime('%d.%m.%Y') }}</td>
+          <td>
+            {% if user.is_admin %}
+              <span class="pred-badge pending">Admin</span>
+            {% else %}
+              <span class="text-muted text-sm">Kullanıcı</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

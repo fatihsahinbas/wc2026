@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper" style="max-width:480px">
+  <div class="page-header">
+    <div class="page-title">⚽ Sonuç Gir</div>
+    <div class="page-subtitle">{{ match.home_team }} vs {{ match.away_team }}</div>
+  </div>
+
+  <div class="card mb-3">
+    <div style="display:flex; justify-content:space-between; text-align:center; padding:.5rem 0">
+      <div>
+        <div style="font-family:var(--font-display); font-size:1.5rem">{{ match.home_team }}</div>
+        <div class="text-sm text-muted">Ev Sahibi</div>
+      </div>
+      <div style="font-family:var(--font-display); font-size:1.5rem; color:var(--text-muted)">VS</div>
+      <div>
+        <div style="font-family:var(--font-display); font-size:1.5rem">{{ match.away_team }}</div>
+        <div class="text-sm text-muted">Deplasman</div>
+      </div>
+    </div>
+    <div class="text-sm text-muted" style="text-align:center">
+      {{ match.start_time.strftime('%d %B %Y, %H:%M') }} · {{ match.stage }}
+    </div>
+    <div class="text-sm text-muted" style="text-align:center">
+      {{ match.predictions.count() }} kullanıcı tahmin yaptı
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Maç Sonucunu Gir</div>
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="grid-2">
+        <div class="form-group">
+          {{ form.home_score.label(class="form-label") }}
+          {{ form.home_score(class="form-control", type="number", min=0, max=30, placeholder="0") }}
+          {% for e in form.home_score.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.away_score.label(class="form-label") }}
+          {{ form.away_score(class="form-control", type="number", min=0, max=30, placeholder="0") }}
+          {% for e in form.away_score.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+
+      <div class="card" style="background:var(--accent-glow); border-color:rgba(245,197,24,.2); padding:1rem; margin-bottom:1rem">
+        <p class="text-sm" style="color:var(--accent)">
+          ⚠ Bu işlem geri alınamaz. Sonuç kaydedildiğinde tüm tahminler otomatik puanlanır.
+        </p>
+      </div>
+
+      <div style="display:flex; gap:.75rem">
+        <button type="submit" class="btn btn-primary">💾 Kaydet & Puanla</button>
+        <a class="btn btn-outline" href="{{ url_for('admin.matches') }}">İptal</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

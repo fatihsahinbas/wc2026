@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <div class="page-title">⚙ Admin Panel</div>
+    <div class="page-subtitle">World Cup 2026 Yönetim Merkezi</div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value">{{ stats.users }}</div>
+      <div class="stat-label">Kullanıcı</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ stats.groups }}</div>
+      <div class="stat-label">Grup</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ stats.matches }}</div>
+      <div class="stat-label">Maç</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ stats.predictions }}</div>
+      <div class="stat-label">Tahmin</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value text-green">{{ stats.finished_matches }}</div>
+      <div class="stat-label">Biten Maç</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <div class="flex-between mb-2">
+        <div class="card-title">Yaklaşan Maçlar</div>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('admin.create_match') }}">+ Yeni Maç</a>
+      </div>
+      {% for match in upcoming %}
+      <div class="card" style="margin-bottom:.75rem; padding:1rem">
+        <div class="flex-between">
+          <div>
+            <div style="font-family:var(--font-display)">{{ match.home_team }} vs {{ match.away_team }}</div>
+            <div class="text-sm text-muted">{{ match.start_time.strftime('%d %b, %H:%M') }} · {{ match.stage }}</div>
+          </div>
+          <a class="btn btn-outline btn-sm" href="{{ url_for('admin.match_result', match_id=match.id) }}">
+            Sonuç Gir
+          </a>
+        </div>
+      </div>
+      {% else %}
+        <p class="text-muted text-sm">Yaklaşan maç yok.</p>
+      {% endfor %}
+    </div>
+
+    <div>
+      <div class="card-title mb-2">Hızlı Linkler</div>
+      <div style="display:flex; flex-direction:column; gap:.5rem">
+        <a class="btn btn-outline" href="{{ url_for('admin.matches') }}">📋 Tüm Maçlar</a>
+        <a class="btn btn-outline" href="{{ url_for('admin.create_match') }}">➕ Yeni Maç Ekle</a>
+        <a class="btn btn-outline" href="{{ url_for('admin.users') }}">👤 Kullanıcılar</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

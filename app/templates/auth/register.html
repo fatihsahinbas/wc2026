@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper" style="max-width:480px">
+  <div class="hero" style="margin-bottom:2rem; padding:2rem">
+    <div class="hero-title" style="font-size:2.5rem">⚽ World Cup<span>2026</span></div>
+    <div class="hero-subtitle">2026 FIFA Dünya Kupası Tahmin Platformu</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Yeni Hesap Oluştur</div>
+
+    <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.username.label(class="form-label") }}
+        {{ form.username(class="form-control", placeholder="kullanici_adi") }}
+        {% for e in form.username.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-control", placeholder="ornek@email.com") }}
+        {% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.password.label(class="form-label") }}
+        {{ form.password(class="form-control", placeholder="En az 8 karakter") }}
+        {% for e in form.password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.confirm_password.label(class="form-label") }}
+        {{ form.confirm_password(class="form-control", placeholder="Parolayı tekrar girin") }}
+        {% for e in form.confirm_password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full" style="justify-content:center; padding:.8rem">
+        Kayıt Ol →
+      </button>
+    </form>
+
+    <div class="divider"></div>
+    <p class="text-sm" style="text-align:center; color:var(--text-secondary)">
+      Zaten hesabın var mı? <a href="{{ url_for('auth.login') }}">Giriş Yap</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

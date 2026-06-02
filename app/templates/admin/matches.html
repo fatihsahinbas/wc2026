@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header flex-between">
+    <div>
+      <div class="page-title">📋 Maç Yönetimi</div>
+      <div class="page-subtitle">{{ matches|length }} maç</div>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('admin.create_match') }}">+ Yeni Maç</a>
+  </div>
+
+  <div class="card" style="padding:0; overflow:hidden">
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          <th>Maç</th>
+          <th>Tarih</th>
+          <th>Aşama</th>
+          <th>Tahmin Sayısı</th>
+          <th>Durum</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for match in matches %}
+        <tr>
+          <td>
+            <span style="font-family:var(--font-display)">
+              {{ match.home_team }} vs {{ match.away_team }}
+            </span>
+          </td>
+          <td class="text-sm text-secondary">{{ match.start_time.strftime('%d %b %Y %H:%M') }}</td>
+          <td class="text-sm">{{ match.stage }}</td>
+          <td class="text-secondary">{{ match.predictions.count() }}</td>
+          <td>
+            {% if match.is_finished %}
+              <span class="pred-badge correct">{{ match.home_score }}-{{ match.away_score }} Bitti</span>
+            {% else %}
+              <span class="pred-badge pending">Bekliyor</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if not match.is_finished %}
+              <a class="btn btn-primary btn-sm" href="{{ url_for('admin.match_result', match_id=match.id) }}">
+                Sonuç Gir
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

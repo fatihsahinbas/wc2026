@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper" style="max-width:700px">
+  <div class="page-header">
+    <div class="page-title">{{ match.home_team }} vs {{ match.away_team }}</div>
+    <div class="page-subtitle">{{ match.stage }} · {{ match.start_time.strftime('%d %B %Y, %H:%M') }}</div>
+  </div>
+
+  <div class="match-card {{ 'finished' if match.is_finished else '' }}" style="margin-bottom:1.5rem">
+    <div class="team-side">
+      <div class="team-name">{{ match.home_team }}</div>
+      {% if match.is_finished %}<div class="team-score">{{ match.home_score }}</div>{% endif %}
+    </div>
+    <div class="match-center">
+      {% if match.is_finished %}
+        <div class="match-vs" style="font-size:1.6rem">–</div>
+        <span class="pred-badge correct">Tamamlandı</span>
+      {% else %}
+        <div class="match-vs">VS</div>
+        {% if match.is_open_for_prediction %}
+          <div class="match-time" data-countdown="{{ match.start_time.isoformat() }}"></div>
+        {% endif %}
+      {% endif %}
+      {% if match.venue %}
+        <div class="match-stage">📍 {{ match.venue }}</div>
+      {% endif %}
+    </div>
+    <div class="team-side away">
+      <div class="team-name">{{ match.away_team }}</div>
+      {% if match.is_finished %}<div class="team-score">{{ match.away_score }}</div>{% endif %}
+    </div>
+  </div>
+
+  {% if match.is_open_for_prediction %}
+  <div class="card">
+    <div class="card-title">{{ '🔄 Tahmini Güncelle' if user_pred else '🎯 Tahmin Yap' }}</div>
+    <form method="POST" action="{{ url_for('matches.predict', match_id=match.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="match_id" value="{{ match.id }}">
+      <div class="outcome-picker mb-2">
+        {% for val, icon, label in [('home','🏠', match.home_team ~ ' Kazanır'), ('draw','🤝','Beraberlik'), ('away','✈️', match.away_team ~ ' Kazanır')] %}
+        <div class="outcome-option">
+          <input type="radio" name="predicted_outcome" id="p_{{ val }}" value="{{ val }}"
+                 {% if user_pred and user_pred.predicted_outcome == val %}checked{% endif %}>
+          <label class="outcome-label" for="p_{{ val }}">
+            <span class="ol-icon">{{ icon }}</span>
+            <span class="ol-text">{{ label }}</span>
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary w-full" style="justify-content:center">
+        Tahmini Kaydet
+      </button>
+    </form>
+  </div>
+  {% elif user_pred %}
+  <div class="card">
+    <div class="card-title">Tahmininiz</div>
+    {% set label = {'home': match.home_team ~ ' Kazanır', 'draw': 'Beraberlik', 'away': match.away_team ~ ' Kazanır'} %}
+    <p>📌 <strong>{{ label[user_pred.predicted_outcome] }}</strong></p>
+    {% if user_pred.points is not none %}
+      {% if user_pred.points == 3 %}
+        <span class="pred-badge correct mt-1">✓ +3 Puan — Doğru tahmin!</span>
+      {% else %}
+        <span class="pred-badge wrong mt-1">✕ 0 Puan</span>
+      {% endif %}
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <a class="btn btn-outline mt-2" href="{{ url_for('matches.index') }}">← Tüm Maçlar</a>
+</div>
+{% endblock %}

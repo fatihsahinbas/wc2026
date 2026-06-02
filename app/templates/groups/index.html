@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <div class="page-title">👥 Gruplar</div>
+    <div class="page-subtitle">Arkadaşlarınla yarış, liderlik tablosunda zirveye çık!</div>
+  </div>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn" data-tab="my-groups">Gruplarım</button>
+      <button class="tab-btn" data-tab="create-group">Grup Oluştur</button>
+      <button class="tab-btn" data-tab="join-group">Gruba Katıl</button>
+    </div>
+
+    {# ── Gruplarım ── #}
+    <div class="tab-panel" id="my-groups">
+      {% if my_groups %}
+        <div style="display:flex; flex-direction:column; gap:.75rem">
+          {% for group in my_groups %}
+          <div class="group-card">
+            <div>
+              <div class="group-name">{{ group.name }}</div>
+              <div class="group-meta">
+                👤 {{ group.member_count() }} üye
+                {% if group.description %} · {{ group.description[:60] }}{% endif %}
+              </div>
+            </div>
+            <div style="display:flex; gap:.5rem; align-items:center; flex-wrap:wrap">
+              <span class="invite-code" title="Kopyala">{{ group.invite_code }}</span>
+              <a class="btn btn-outline btn-sm" href="{{ url_for('groups.leaderboard', group_id=group.id) }}">
+                🏅 Sıralama
+              </a>
+              <a class="btn btn-primary btn-sm" href="{{ url_for('groups.detail', group_id=group.id) }}">
+                Görüntüle →
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">👥</div>
+          <div class="empty-text">Henüz bir gruba katılmadınız.</div>
+        </div>
+      {% endif %}
+    </div>
+
+    {# ── Grup Oluştur ── #}
+    <div class="tab-panel" id="create-group">
+      <div class="card" style="max-width:480px">
+        <div class="card-title">Yeni Grup Oluştur</div>
+        <form method="POST" action="{{ url_for('groups.create') }}" novalidate>
+          {{ create_form.hidden_tag() }}
+          <div class="form-group">
+            {{ create_form.name.label(class="form-label") }}
+            {{ create_form.name(class="form-control", placeholder="Örn: Ofis Ligi 2026") }}
+            {% for e in create_form.name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+          </div>
+          <div class="form-group">
+            {{ create_form.description.label(class="form-label") }}
+            {{ create_form.description(class="form-control", rows=2, placeholder="İsteğe bağlı açıklama...") }}
+          </div>
+          <button type="submit" class="btn btn-primary">✨ Grubu Oluştur</button>
+        </form>
+      </div>
+    </div>
+
+    {# ── Gruba Katıl ── #}
+    <div class="tab-panel" id="join-group">
+      <div class="card" style="max-width:400px">
+        <div class="card-title">Davet Koduyla Katıl</div>
+        <form method="POST" action="{{ url_for('groups.join') }}" novalidate>
+          {{ join_form.hidden_tag() }}
+          <div class="form-group">
+            {{ join_form.invite_code.label(class="form-label") }}
+            {{ join_form.invite_code(class="form-control", placeholder="ABCD1234EF", style="font-family:monospace; letter-spacing:.1em; text-transform:uppercase") }}
+            {% for e in join_form.invite_code.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+          </div>
+          <button type="submit" class="btn btn-primary">🚀 Gruba Katıl</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
