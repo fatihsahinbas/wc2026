@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header flex-between">
+    <div>
+      <div class="page-title">📋 Aktivite Logları</div>
+      <div class="page-subtitle">Tüm kullanıcı hareketleri</div>
+    </div>
+    <a class="btn btn-outline" href="{{ url_for('admin.dashboard') }}">← Admin</a>
+  </div>
+
+  <div class="card" style="padding:0; overflow:hidden">
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          <th>Tarih/Saat</th>
+          <th>Kullanıcı</th>
+          <th>İşlem</th>
+          <th>IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs.items %}
+        <tr>
+          <td class="text-sm text-muted">
+            {{ log.created_at.strftime('%d.%m.%Y %H:%M:%S') }}
+          </td>
+          <td>
+            <div style="font-family:var(--font-display)">{{ log.username }}</div>
+          </td>
+          <td>{{ log.action }}</td>
+          <td class="text-sm text-muted">{{ log.ip_address }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" style="text-align:center; padding:2rem; color:var(--text-muted)">
+            Henüz log yok.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if logs.pages > 1 %}
+  <div style="display:flex; gap:.5rem; justify-content:center; margin-top:1rem">
+    {% if logs.has_prev %}
+      <a class="btn btn-outline btn-sm" href="?page={{ logs.prev_num }}">← Önceki</a>
+    {% endif %}
+    <span style="padding:.35rem .75rem; color:var(--text-muted); font-size:.85rem">
+      {{ logs.page }} / {{ logs.pages }}
+    </span>
+    {% if logs.has_next %}
+      <a class="btn btn-outline btn-sm" href="?page={{ logs.next_num }}">Sonraki →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -49,6 +49,7 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+
         try:
             db.session.execute(db.text(
                 "ALTER TABLE matches ADD COLUMN api_match_id VARCHAR(32) UNIQUE"
@@ -56,6 +57,22 @@ def create_app():
             db.session.commit()
         except Exception:
             db.session.rollback()
+
+        try:
+            db.session.execute(db.text("""
+                CREATE TABLE IF NOT EXISTS activity_logs (
+                    id SERIAL PRIMARY KEY,
+                    user_id INTEGER REFERENCES users(id),
+                    username VARCHAR(64),
+                    action VARCHAR(200) NOT NULL,
+                    ip_address VARCHAR(45),
+                    created_at TIMESTAMP DEFAULT NOW()
+                )
+            """))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
         _seed_admin(app)
 
     return app

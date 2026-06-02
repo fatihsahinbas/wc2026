@@ -2,7 +2,7 @@ from datetime import datetime
 from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import login_required, current_user
-from ..models import Match, User, Group, Prediction
+from ..models import Match, User, Group, Prediction,ActivityLog
 from ..forms import MatchResultForm
 from ..scoring import recalculate_match_predictions
 from .. import db
@@ -112,3 +112,13 @@ def match_result(match_id):
 def users():
     all_users = User.query.order_by(User.created_at.desc()).all()
     return render_template("admin/users.html", users=all_users, title="Kullanıcılar")
+
+@admin_bp.route("/logs")
+@login_required
+@admin_required
+def logs():
+    page = request.args.get("page", 1, type=int)
+    logs = ActivityLog.query.order_by(ActivityLog.created_at.desc()).paginate(
+        page=page, per_page=50, error_out=False
+    )
+    return render_template("admin/logs.html", logs=logs, title="Aktivite Logları")

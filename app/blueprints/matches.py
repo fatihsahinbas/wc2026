@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
-from ..models import Match, Prediction
+from ..models import Match, Prediction,ActivityLog
 from ..forms import PredictionForm
 from .. import db
 
@@ -78,7 +78,11 @@ def predict(match_id):
             )
             db.session.add(pred)
             flash("Tahmininiz kaydedildi! 🎯", "success")
-
+            
+        action = f"Tahmin: {match.home_team} vs {match.away_team} → {form.predicted_outcome.data}"
+        log = ActivityLog(user_id=current_user.id, username=current_user.username,
+                        action=action, ip_address=request.remote_addr)
+        db.session.add(log)
         db.session.commit()
 
     return redirect(url_for("matches.index"))

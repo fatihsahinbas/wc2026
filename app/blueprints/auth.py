@@ -5,6 +5,8 @@ from ..forms import RegistrationForm, LoginForm
 from .. import db
 import os
 
+from ..models import ActivityLog
+
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 def _registration_open():
@@ -41,6 +43,11 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=True)
+            log = ActivityLog(user_id=user.id, username=user.username,
+                  action="Giriş yaptı",
+                  ip_address=request.remote_addr)
+            db.session.add(log)
+            db.session.commit()
             next_page = request.args.get("next")
             flash(f"Hoş geldin, {user.username}! 🏆", "success")
             return redirect(next_page or url_for("matches.index"))
@@ -52,6 +59,11 @@ def login():
 @auth_bp.route("/logout")
 @login_required
 def logout():
+    log = ActivityLog(user_id=current_user.id, username=current_user.username,
+                    action="Çıkış yaptı",
+                    ip_address=request.remote_addr)
+    db.session.add(log)
+    db.session.commit()    
     logout_user()
     flash("Çıkış yapıldı.", "info")
     return redirect(url_for("auth.login"))

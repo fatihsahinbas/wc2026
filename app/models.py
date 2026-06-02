@@ -154,3 +154,15 @@ class Prediction(db.Model):
 
     def __repr__(self):
         return f"<Prediction user={self.user_id} match={self.match_id} {self.predicted_outcome}>"
+class ActivityLog(db.Model):
+    __tablename__ = "activity_logs"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+    username = db.Column(db.String(64))
+    action = db.Column(db.String(200), nullable=False)
+    ip_address = db.Column(db.String(45))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    user = db.relationship("User", backref="logs")
+    
