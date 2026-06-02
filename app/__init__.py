@@ -11,6 +11,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()
 
+
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
 
@@ -37,12 +38,14 @@ def create_app():
     from .blueprints.matches import matches_bp
     from .blueprints.admin import admin_bp
     from .blueprints.api import api_bp
+    from .blueprints.fixtures import fixtures_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(groups_bp)
     app.register_blueprint(matches_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(api_bp, url_prefix="/api/v1")
+    app.register_blueprint(fixtures_bp)
 
     with app.app_context():
         db.create_all()
@@ -52,7 +55,6 @@ def create_app():
 
 
 def _seed_admin(app):
-    """Admin kullanıcısını oluştur (yoksa)."""
     from .models import User
 
     admin_username = app.config["ADMIN_USERNAME"]

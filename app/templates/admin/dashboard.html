@@ -55,6 +55,10 @@
     <div>
       <div class="card-title mb-2">Hızlı Linkler</div>
       <div style="display:flex; flex-direction:column; gap:.5rem">
+        <a class="btn btn-primary" href="{{ url_for('fixtures.sync') }}"
+           onclick="return confirm('football-data.org API\'den fikstürler çekilecek. Devam?')">
+          🔄 Fikstürleri Senkronize Et
+        </a>
         <a class="btn btn-outline" href="{{ url_for('admin.matches') }}">📋 Tüm Maçlar</a>
         <a class="btn btn-outline" href="{{ url_for('admin.create_match') }}">➕ Yeni Maç Ekle</a>
         <a class="btn btn-outline" href="{{ url_for('admin.users') }}">👤 Kullanıcılar</a>

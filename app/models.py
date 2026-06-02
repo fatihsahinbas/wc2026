@@ -102,6 +102,8 @@ class Match(db.Model):
     home_score = db.Column(db.Integer)
     away_score = db.Column(db.Integer)
     is_finished = db.Column(db.Boolean, default=False, nullable=False)
+    
+    api_match_id = db.Column(db.String(32), unique=True, nullable=True, index=True)
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
