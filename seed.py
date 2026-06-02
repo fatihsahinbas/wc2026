@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("FLASK_ENV", "development")
 os.environ.setdefault("SECRET_KEY", "seed-secret")
 os.environ.setdefault("ADMIN_USERNAME", "admin")
-os.environ.setdefault("ADMIN_PASSWORD", "Admin2026!")
+os.environ.setdefault("ADMIN_PASSWORD", "X1ece979!1")
 
 from app import create_app, db
 from app.models import User, Group, Match, Prediction, group_members
