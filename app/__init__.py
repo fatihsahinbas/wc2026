@@ -15,14 +15,15 @@ def create_app():
     app = Flask(__name__, instance_relative_config=True)
 
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "1019add9c072a2951927d8cb5ab15a68370a94c34740e28e")
+
     db_url = os.getenv("DATABASE_URL", "sqlite:///wc2026.db")
-    # Render'ın eski postgres:// formatını düzelt
     if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
-        app.config["SQLALCHEMY_DATABASE_URI"] = db_url
-        app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-        app.config["WTF_CSRF_ENABLED"] = True
-        app.config["ADMIN_USERNAME"] = os.getenv("ADMIN_USERNAME", "admin")
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["WTF_CSRF_ENABLED"] = True
+    app.config["ADMIN_USERNAME"] = os.getenv("ADMIN_USERNAME", "admin")
 
     db.init_app(app)
     login_manager.init_app(app)
