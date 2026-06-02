@@ -1,8 +1,9 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="page-wrapper" style="max-width:440px">
-  <div class="hero" style="margin-bottom:2rem; padding:2rem">
-    <div class="hero-title" style="font-size:2.5rem">⚽ World Cup<span></span></div>
+{% extends "base.html" %} {% block content %}
+<div class="page-wrapper" style="max-width: 440px">
+  <div class="hero" style="margin-bottom: 2rem; padding: 2rem">
+    <div class="hero-title" style="font-size: 2.5rem">
+      ⚽ World Cup<span></span>
+    </div>
     <div class="hero-subtitle">2026 FIFA Dünya Kupası Tahmin Platformu</div>
   </div>
 
@@ -13,26 +14,36 @@
       {{ form.hidden_tag() }}
 
       <div class="form-group">
-        {{ form.username.label(class="form-label") }}
-        {{ form.username(class="form-control", placeholder="Kullanıcı adınız") }}
-        {% for e in form.username.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        {{ form.username.label(class="form-label") }} {{
+        form.username(class="form-control", placeholder="Kullanıcı adınız") }}
+        {% for e in form.username.errors %}
+        <div class="form-error">{{ e }}</div>
+        {% endfor %}
       </div>
 
       <div class="form-group">
-        {{ form.password.label(class="form-label") }}
-        {{ form.password(class="form-control", placeholder="Parolanız") }}
-        {% for e in form.password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        {{ form.password.label(class="form-label") }} {{
+        form.password(class="form-control", placeholder="Parolanız") }} {% for e
+        in form.password.errors %}
+        <div class="form-error">{{ e }}</div>
+        {% endfor %}
       </div>
 
-      <button type="submit" class="btn btn-primary w-full" style="justify-content:center; padding:.8rem">
+      <button
+        type="submit"
+        class="btn btn-primary w-full"
+        style="justify-content: center; padding: 0.8rem"
+      >
         Giriş Yap →
       </button>
     </form>
 
     <div class="divider"></div>
-    <p class="text-sm" style="text-align:center; color:var(--text-secondary)">
+    {% if config.get('REGISTRATION_OPEN', 'false') == 'true' %}
+    <p class="text-sm" style="text-align: center; color: var(--text-secondary)">
       Hesabın yok mu? <a href="{{ url_for('auth.register') }}">Kayıt Ol</a>
     </p>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
